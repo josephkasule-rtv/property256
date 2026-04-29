@@ -94,6 +94,25 @@ class PropertyDetailScreen extends StatelessWidget {
                   ? Colors.green.shade100
                   : Colors.red.shade100,
             ),
+            if (property.isAvailable) ...<Widget>[
+              const SizedBox(height: 20),
+              Row(
+                children: <Widget>[
+                  OutlinedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.arrow_upward),
+                    label: const Text('Upvote'),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      child: const Text('Request Viewing'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ],
         ),
       ),
