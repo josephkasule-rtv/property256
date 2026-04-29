@@ -132,3 +132,19 @@ Examples:
 - A commit is blocked if `flutter analyze` fails.
 - A commit is blocked if `flutter test` fails.
 - Fix the issues and commit again.
+
+## SonarCloud Pipeline
+
+This project includes a dedicated GitHub Actions workflow for SonarCloud static analysis:
+- `.github/workflows/sonarcloud.yml`
+
+What it does:
+- runs on push and pull request for `main` and `develop`
+- executes `flutter test --coverage`
+- sends analysis to SonarCloud
+
+Required GitHub repository secrets:
+- `SONAR_TOKEN`: SonarCloud token with permission to analyze this project
+
+GitHub-provided token:
+- `GITHUB_TOKEN` is used automatically by GitHub Actions for PR decoration
