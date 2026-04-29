@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-
 abstract final class CurrencyFormatter {
   static String ugxPerMonth({required final int amount}) {
     final String formatted = _formatWholeNumber(value: amount);
