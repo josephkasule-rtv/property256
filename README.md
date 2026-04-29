@@ -142,6 +142,7 @@ What it does:
 - runs on push and pull request for `main` and `develop`
 - executes `flutter test --coverage`
 - sends analysis to SonarCloud
+- posts/updates a PR comment with Sonar quality gate and key metrics
 
 Required GitHub repository secrets:
 - `SONAR_TOKEN`: SonarCloud token with permission to analyze this project
