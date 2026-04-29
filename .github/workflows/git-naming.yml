@@ -1,0 +1,77 @@
+name: Git Naming Convention
+
+on:
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  commit-message-check:
+    name: Commit Message Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check latest commit message only
+        run: |
+          COMMIT_MSG=$(git log -1 --pretty=format:%s)
+
+          echo "Checking latest commit from PR branch:"
+          echo "Commit SHA: ${{ github.event.pull_request.head.sha }}"
+          echo "Subject: $COMMIT_MSG"
+          echo "---"
+
+          if [[ "$COMMIT_MSG" =~ ^Merge ]]; then
+            echo "Skipping merge commit validation"
+            exit 0
+          fi
+
+          if [[ ! "$COMMIT_MSG" =~ ^(devops|patch|feat|fix|docs|style|refactor|perf|test|chore|revert|ci|build)(\(.+\))?:\ .+ ]]; then
+            echo "Commit message does not follow Conventional Commits specification."
+            echo "Expected format: type(optional-scope): description"
+            echo "Valid types: feat, fix, docs, style, refactor, perf, test, chore, revert, ci, build, devops, patch"
+            exit 1
+          fi
+
+          SUBJECT=$(echo "$COMMIT_MSG" | sed -E 's/^[a-z]+(\([^)]+\))?: //')
+          if [[ -z "$SUBJECT" ]]; then
+            echo "Commit subject may not be empty."
+            exit 1
+          fi
+
+          if [[ "$SUBJECT" =~ \.$ ]]; then
+            echo "Commit subject may not end with a period."
+            exit 1
+          fi
+
+          if [[ ${#COMMIT_MSG} -gt 100 ]]; then
+            echo "Warning: Commit header is longer than 100 characters (${#COMMIT_MSG} chars)"
+          fi
+
+          echo "Latest commit message follows Conventional Commits specification."
+
+  branch-naming-check:
+    name: Branch Naming Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check branch name
+        run: |
+          BRANCH_NAME="${{ github.head_ref }}"
+          echo "Checking branch name: $BRANCH_NAME"
+
+          if [[ ! "$BRANCH_NAME" =~ ^(devops|patch|feature|bugfix|hotfix|release|develop)/.+$ ]]; then
+            echo "Branch name does not follow Git Flow convention."
+            echo "Expected patterns:"
+            echo "  - feature/your-feature-name"
+            echo "  - bugfix/your-bugfix-name"
+            echo "  - hotfix/your-hotfix-name"
+            echo "  - release/version-number"
+            echo "  - develop/your-branch-name"
+            exit 1
+          fi
+
+          echo "Branch name follows Git Flow convention."
