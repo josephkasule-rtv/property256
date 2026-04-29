@@ -71,9 +71,9 @@ This repository uses a native Git pre-commit hook script (no global package inst
 
 Configured checks:
 - Branch naming convention
-- Latest commit message convention
 - `flutter analyze`
 - `flutter test`
+- Commit message convention (via `commit-msg` hook)
 
 ### One-time Setup
 
@@ -85,8 +85,10 @@ make hooks-install
 
 This command:
 - ensures `script/pre_commit.sh` is executable
+- ensures `script/commit_msg.sh` is executable
 - installs `.git/hooks/pre-commit`
-- makes the installed hook executable
+- installs `.git/hooks/commit-msg`
+- makes both installed hooks executable
 
 You can still run the script manually if needed:
 
@@ -96,6 +98,12 @@ Run the same checks manually:
 
 ```bash
 make hooks-run
+```
+
+Run commit message validation manually:
+
+```bash
+make hooks-run-commit-msg MSG="feat: add property filters"
 ```
 
 ### Naming Conventions Enforced Locally
@@ -128,9 +136,9 @@ Examples:
 ### Commit Behavior
 
 - A commit is blocked if branch naming does not follow allowed prefixes.
-- A commit is blocked if latest commit message does not match allowed format.
 - A commit is blocked if `flutter analyze` fails.
 - A commit is blocked if `flutter test` fails.
+- A commit is blocked if the new commit message does not match allowed format.
 - Fix the issues and commit again.
 
 ## SonarCloud Pipeline
