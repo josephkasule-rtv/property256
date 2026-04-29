@@ -154,6 +154,7 @@ What it does:
 
 Required GitHub repository secrets:
 - `SONAR_TOKEN`: SonarCloud token with permission to analyze this project
+- `SONAR_ORGANIZATION`: SonarCloud organization key (for example `your-org-key`)
 
 GitHub-provided token:
 - `GITHUB_TOKEN` is used automatically by GitHub Actions for PR decoration
