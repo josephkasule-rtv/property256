@@ -64,3 +64,71 @@ The app uses a modular monolith + layered architecture:
 - `lib/features/property/data/` - models, in-memory datasource, repository implementation
 - `lib/features/property/presentation/` - provider, screens, widgets
 - `lib/shared/` - shared utilities
+
+## Pre-commit Checks
+
+This repository uses a native Git pre-commit hook script (no global package install required).
+
+Configured checks:
+- Branch naming convention
+- Latest commit message convention
+- `flutter analyze`
+- `flutter test`
+
+### One-time Setup
+
+Install the Git hook (recommended):
+
+```bash
+make hooks-install
+```
+
+This command:
+- ensures `script/pre_commit.sh` is executable
+- installs `.git/hooks/pre-commit`
+- makes the installed hook executable
+
+You can still run the script manually if needed:
+
+### Manual Run
+
+Run the same checks manually:
+
+```bash
+make hooks-run
+```
+
+### Naming Conventions Enforced Locally
+
+Branch names must follow one of these prefixes:
+- `feature/`
+- `bugfix/`
+- `hotfix/`
+- `release/`
+- `develop/`
+- `devops/`
+- `patch/`
+
+Examples:
+- `feature/property-card-redesign`
+- `bugfix/detail-screen-null-state`
+- `develop/integration-tests`
+
+Latest commit message must follow:
+- `type(optional-scope): description`
+
+Allowed types:
+- `devops`, `patch`, `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `chore`, `revert`, `ci`, `build`
+
+Examples:
+- `feat: add property filters`
+- `fix(detail): handle empty property state`
+- `docs(readme): clarify local hook setup`
+
+### Commit Behavior
+
+- A commit is blocked if branch naming does not follow allowed prefixes.
+- A commit is blocked if latest commit message does not match allowed format.
+- A commit is blocked if `flutter analyze` fails.
+- A commit is blocked if `flutter test` fails.
+- Fix the issues and commit again.
