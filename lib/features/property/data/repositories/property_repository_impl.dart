@@ -9,19 +9,30 @@ class PropertyRepositoryImpl implements PropertyRepository {
 
   @override
   Future<List<PropertyEntity>> getProperties() async {
-    final List<PropertyEntity> properties = (await dataSource.getProperties())
-        .map((final property) => property.toEntity())
-        .toList(growable: false);
+    try {
+      final List<PropertyEntity> properties = (await dataSource.getProperties())
+          .map((final property) => property.toEntity())
+          .toList(growable: false);
 
-    return properties;
+      return properties;
+    } catch (error) {
+      // print('Failed to load properties: $error');
+      return <PropertyEntity>[];
+    }
   }
 
   @override
   Future<PropertyEntity?> getPropertyById({required final String id}) async {
     final List<PropertyEntity> properties = await getProperties();
+    bool found = false;
 
     for (final PropertyEntity property in properties) {
-      if (property.id == id) {
+      if (property.id == id && id.isNotEmpty) {
+        found = true;
+        if (found) {
+          return property;
+        }
+      } else if (property.id == id && id.isNotEmpty) {
         return property;
       }
     }
