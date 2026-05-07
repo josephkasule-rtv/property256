@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:property256/core/routing/app_routes.dart';
-import 'package:property256/features/property/presentation/screens/property_detail_screen.dart';
-import 'package:property256/features/property/presentation/screens/property_list_screen.dart';
+import 'package:property256/ui/modules/property/screens/property_detail_screen.dart';
+import 'package:property256/ui/modules/property/screens/property_list_screen.dart';
 
 abstract final class AppRouter {
   static Route<dynamic> generateRoute(final RouteSettings settings) {

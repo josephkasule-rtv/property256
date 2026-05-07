@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:property256/core/database/app_database.dart';
 import 'package:property256/core/routing/app_router.dart';
 import 'package:property256/core/routing/app_routes.dart';
 import 'package:property256/core/theme/app_theme.dart';
-import 'package:property256/features/property/data/datasources/in_memory_property_datasource.dart';
-import 'package:property256/features/property/data/repositories/property_repository_impl.dart';
-import 'package:property256/features/property/domain/usecases/get_properties_usecase.dart';
-import 'package:property256/features/property/presentation/providers/property_provider.dart';
+import 'package:property256/core/repository/in_memory_property_datasource.dart';
+import 'package:property256/core/repository/property_repository_impl.dart';
+import 'package:property256/core/services/get_properties_usecase.dart';
+import 'package:property256/core/providers/property_provider.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await AppDatabase.instance.initialize();
   runApp(const Property256App());
 }
 

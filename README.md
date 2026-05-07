@@ -5,7 +5,7 @@ Property256 is a Flutter MVP for property management in Kampala.
 Current scope:
 - Property listing screen
 - Single property detail screen
-- In-memory data source (no database yet)
+- In-memory data source for property listing module
 
 ## Prerequisites
 
@@ -59,11 +59,16 @@ flutter test test/widget_test.dart
 
 The app uses a modular monolith + layered architecture:
 
-- `lib/core/` - app-wide routing and theme
-- `lib/features/property/domain/` - entities, repository contracts, use-cases
-- `lib/features/property/data/` - models, in-memory datasource, repository implementation
-- `lib/features/property/presentation/` - provider, screens, widgets
-- `lib/shared/` - shared utilities
+- `lib/core/models/` - domain entities and persistent models
+- `lib/core/repository/` - repository contract, implementation, and in-memory datasource
+- `lib/core/services/` - use-cases (application services)
+- `lib/core/providers/` - state management (`ChangeNotifier` provider)
+- `lib/core/routing/` - route names and route generation
+- `lib/core/theme/` - app theme configuration
+- `lib/ui/modules/property/` - property screens and widgets
+- `lib/ui/util/` - UI utilities like currency formatting
+- `test/core/` - repository and service unit tests
+- `test/widget_test.dart` - end-to-end widget flow for list/detail screens
 
 ## Pre-commit Checks
 
