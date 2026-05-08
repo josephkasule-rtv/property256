@@ -6,18 +6,10 @@ import 'package:property256/core/repository/property_repository.dart';
 import 'package:property256/main.dart';
 
 void main() {
-  testWidgets('creates property and returns to list', (
-    final WidgetTester tester,
-  ) async {
-    await tester.binding.setSurfaceSize(const Size(1200, 2200));
-    addTearDown(() => tester.binding.setSurfaceSize(null));
-
+  testWidgets('creates property and returns to list', (final WidgetTester tester) async {
     final InMemoryPropertyRepository repository = InMemoryPropertyRepository();
 
-    await tester.pumpWidget(Property256App(repository: repository));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 500));
-    await tester.pump(const Duration(seconds: 1));
+    await _pumpApp(tester: tester, repository: repository);
 
     expect(find.text('Property256 Kampala'), findsOneWidget);
 
@@ -52,6 +44,48 @@ void main() {
     expect(find.text('Property256 Kampala'), findsOneWidget);
     expect(find.text(createdTitle), findsOneWidget);
   });
+
+  testWidgets('opens property details and creates unit', (
+    final WidgetTester tester,
+  ) async {
+    final InMemoryPropertyRepository repository = InMemoryPropertyRepository();
+
+    await _pumpApp(tester: tester, repository: repository);
+
+    expect(find.text('Modern 3-Bedroom Apartment'), findsOneWidget);
+    await tester.tap(find.text('Modern 3-Bedroom Apartment'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Units'), findsOneWidget);
+    expect(find.text('No units yet. Tap "Add Unit" to create one.'), findsOneWidget);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Add Unit'), findsWidgets);
+    await tester.enterText(find.byType(TextFormField).at(0), 'A-101');
+    await tester.enterText(find.byType(TextFormField).at(1), '1500000');
+
+    await tester.tap(find.text('Save Unit'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Unit added successfully'), findsOneWidget);
+    expect(find.text('A-101'), findsOneWidget);
+    expect(find.text('Vacant'), findsWidgets);
+  });
+}
+
+Future<void> _pumpApp({
+  required final WidgetTester tester,
+  required final InMemoryPropertyRepository repository,
+}) async {
+  await tester.binding.setSurfaceSize(const Size(1200, 2200));
+  addTearDown(() => tester.binding.setSurfaceSize(null));
+
+  await tester.pumpWidget(Property256App(repository: repository));
+  await tester.pump();
+  await tester.pump(const Duration(milliseconds: 500));
+  await tester.pump(const Duration(seconds: 1));
 }
 
 class InMemoryPropertyRepository implements PropertyRepository {
@@ -75,6 +109,8 @@ class InMemoryPropertyRepository implements PropertyRepository {
       ];
 
   final List<PropertyEntity> _properties;
+  final Map<String, List<UnitEntity>> _unitsByPropertyId =
+      <String, List<UnitEntity>>{};
 
   @override
   Future<void> createProperty({required final PropertyEntity property}) async {
@@ -82,7 +118,13 @@ class InMemoryPropertyRepository implements PropertyRepository {
   }
 
   @override
-  Future<void> createUnit({required final UnitEntity unit}) async {}
+  Future<void> createUnit({required final UnitEntity unit}) async {
+    final List<UnitEntity> units = _unitsByPropertyId.putIfAbsent(
+      unit.propertyId,
+      () => <UnitEntity>[],
+    );
+    units.insert(0, unit);
+  }
 
   @override
   Future<PropertyEntity?> getPropertyById({required final String id}) async {
@@ -104,6 +146,8 @@ class InMemoryPropertyRepository implements PropertyRepository {
   Future<List<UnitEntity>> getUnitsByPropertyId({
     required final String propertyId,
   }) async {
-    return <UnitEntity>[];
+    return List<UnitEntity>.unmodifiable(
+      _unitsByPropertyId[propertyId] ?? <UnitEntity>[],
+    );
   }
 }
