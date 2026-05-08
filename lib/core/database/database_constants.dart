@@ -3,7 +3,7 @@ abstract final class DbConfig {
   static const String fileName = 'property256.db';
 
   /// Bump when schema changes; add `onUpgrade` in [AppDatabase].
-  static const int version = 2;
+  static const int version = 3;
 }
 
 /// `properties` table and columns.

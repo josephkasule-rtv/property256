@@ -72,6 +72,7 @@ CREATE TABLE ${UnitsTable.tableName} (
     ON DELETE CASCADE
 );
 ''');
+    await _seedUnits(db: db);
 
     await db.execute('''
 CREATE TABLE ${TenantsTable.tableName} (
@@ -142,6 +143,10 @@ CREATE TABLE ${ExpensesTable.tableName} (
       );
       await _seedProperties(db: db);
     }
+
+    if (oldVersion < 3) {
+      await _seedUnits(db: db);
+    }
   }
 
   Future<void> _seedProperties({required final Database db}) async {
@@ -163,45 +168,34 @@ CREATE TABLE ${ExpensesTable.tableName} (
         PropertiesTable.isAvailable: sqliteBoolToColumn(true),
         PropertiesTable.listedAt: sqliteDateTimeToColumn(DateTime(2026, 4, 10)),
       },
-      <String, Object?>{
-        PropertiesTable.id: 'ntinda-002',
-        PropertiesTable.userId: 'static-user-001',
-        PropertiesTable.title: 'Family Home with Garden',
-        PropertiesTable.location: 'Ntinda, Kampala',
-        PropertiesTable.address: 'Ntinda Road, Kampala',
-        PropertiesTable.pricePerMonth: 3000000,
-        PropertiesTable.bedrooms: 4,
-        PropertiesTable.bathrooms: 3,
-        PropertiesTable.squareMeters: 185,
-        PropertiesTable.imageUrl:
-            'https://images.unsplash.com/photo-1448630360428-65456885c650?w=1200',
-        PropertiesTable.description:
-            'Spacious standalone home with parking, compound, and a secure neighborhood.',
-        PropertiesTable.isAvailable: sqliteBoolToColumn(true),
-        PropertiesTable.listedAt: sqliteDateTimeToColumn(DateTime(2026, 3, 28)),
-      },
-      <String, Object?>{
-        PropertiesTable.id: 'najjera-003',
-        PropertiesTable.userId: 'static-user-001',
-        PropertiesTable.title: 'Budget 2-Bedroom Rental',
-        PropertiesTable.location: 'Najjera, Kampala',
-        PropertiesTable.address: 'Kira Road, Najjera',
-        PropertiesTable.pricePerMonth: 1400000,
-        PropertiesTable.bedrooms: 2,
-        PropertiesTable.bathrooms: 1,
-        PropertiesTable.squareMeters: 78,
-        PropertiesTable.imageUrl:
-            'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200',
-        PropertiesTable.description:
-            'Affordable option with easy access to transport and neighborhood amenities.',
-        PropertiesTable.isAvailable: sqliteBoolToColumn(false),
-        PropertiesTable.listedAt: sqliteDateTimeToColumn(DateTime(2026, 2, 14)),
-      },
     ];
 
     for (final Map<String, Object?> row in seedRows) {
       await db.insert(
         PropertiesTable.tableName,
+        row,
+        conflictAlgorithm: ConflictAlgorithm.ignore,
+      );
+    }
+  }
+
+  Future<void> _seedUnits({required final Database db}) async {
+    final List<Map<String, Object?>> seedRows = <Map<String, Object?>>[
+      <String, Object?>{
+        UnitsTable.id: 'unit-kololo-001',
+        UnitsTable.propertyId: 'kololo-001',
+        UnitsTable.unitName: 'A1',
+        UnitsTable.bedrooms: 2,
+        UnitsTable.bathrooms: 2,
+        UnitsTable.rentAmount: 2100000,
+        UnitsTable.isOccupied: sqliteBoolToColumn(false),
+        UnitsTable.createdAt: sqliteDateTimeToColumn(DateTime(2026, 4, 12)),
+      },
+    ];
+
+    for (final Map<String, Object?> row in seedRows) {
+      await db.insert(
+        UnitsTable.tableName,
         row,
         conflictAlgorithm: ConflictAlgorithm.ignore,
       );

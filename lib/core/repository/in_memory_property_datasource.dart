@@ -26,38 +26,4 @@ final List<PropertyModel> _properties = <PropertyModel>[
     isAvailable: true,
     listedAt: DateTime(2026, 4, 10),
   ),
-  PropertyModel(
-    id: 'ntinda-002',
-    userId: 'static-user-001',
-    title: 'Family Home with Garden',
-    location: 'Ntinda, Kampala',
-    address: 'Ntinda Road, Kampala',
-    pricePerMonth: 3000000,
-    bedrooms: 4,
-    bathrooms: 3,
-    squareMeters: 185,
-    imageUrl:
-        'https://images.unsplash.com/photo-1448630360428-65456885c650?w=1200',
-    description:
-        'Spacious standalone home with parking, compound, and a secure neighborhood.',
-    isAvailable: true,
-    listedAt: DateTime(2026, 3, 28),
-  ),
-  PropertyModel(
-    id: 'najjera-003',
-    userId: 'static-user-001',
-    title: 'Budget 2-Bedroom Rental',
-    location: 'Najjera, Kampala',
-    address: 'Kira Road, Najjera',
-    pricePerMonth: 1400000,
-    bedrooms: 2,
-    bathrooms: 1,
-    squareMeters: 78,
-    imageUrl:
-        'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200',
-    description:
-        'Affordable option with easy access to transport and neighborhood amenities.',
-    isAvailable: false,
-    listedAt: DateTime(2026, 2, 14),
-  ),
 ];
