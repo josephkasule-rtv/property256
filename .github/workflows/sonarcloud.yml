@@ -100,6 +100,55 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Enforce maximum duplication quality gate
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REF_NAME: ${{ github.ref_name }}
+        run: |
+          PROJECT_KEY="$(sed -n 's/^sonar.projectKey=\(.*\)$/\1/p' sonar-project.properties)"
+
+          if [[ -z "$PROJECT_KEY" ]]; then
+            echo "Unable to find sonar.projectKey in sonar-project.properties"
+            exit 1
+          fi
+
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            MEASURE_URL="https://sonarcloud.io/api/measures/component?component=${PROJECT_KEY}&pullRequest=${PR_NUMBER}&metricKeys=duplicated_lines_density"
+          else
+            MEASURE_URL="https://sonarcloud.io/api/measures/component?component=${PROJECT_KEY}&branch=${REF_NAME}&metricKeys=duplicated_lines_density"
+          fi
+
+          curl -sS -u "${SONAR_TOKEN}:" "${MEASURE_URL}" -o duplication_measure.json
+
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          threshold = 10.0
+          payload = json.loads(Path("duplication_measure.json").read_text())
+          measures = payload.get("component", {}).get("measures", [])
+
+          duplication_value = None
+          for measure in measures:
+              if measure.get("metric") == "duplicated_lines_density":
+                  duplication_value = measure.get("value")
+                  break
+
+          if duplication_value is None:
+              raise SystemExit("Unable to read duplicated_lines_density from SonarCloud response")
+
+          duplication_percent = float(duplication_value)
+          if duplication_percent > threshold:
+              raise SystemExit(
+                  f"Duplication quality gate failed: {duplication_percent:.2f}% exceeds {threshold:.2f}%"
+              )
+
+          print(
+              f"Duplication quality gate passed: {duplication_percent:.2f}% <= {threshold:.2f}%"
+          )
+          PY
+
       - name: Fetch SonarCloud PR summary
         if: github.event_name == 'pull_request'
         env:
