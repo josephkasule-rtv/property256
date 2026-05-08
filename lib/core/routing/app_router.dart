@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:property256/core/routing/app_routes.dart';
+import 'package:property256/ui/modules/property/screens/create_property_screen.dart';
 import 'package:property256/ui/modules/property/screens/property_detail_screen.dart';
 import 'package:property256/ui/modules/property/screens/property_list_screen.dart';
 
@@ -9,6 +10,11 @@ abstract final class AppRouter {
       case AppRoutes.propertyList:
         return MaterialPageRoute<void>(
           builder: (final BuildContext context) => const PropertyListScreen(),
+          settings: settings,
+        );
+      case AppRoutes.propertyCreate:
+        return MaterialPageRoute<bool>(
+          builder: (final BuildContext context) => const CreatePropertyScreen(),
           settings: settings,
         );
       case AppRoutes.propertyDetail:

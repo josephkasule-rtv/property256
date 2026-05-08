@@ -11,6 +11,7 @@ class InMemoryPropertyDataSource {
 final List<PropertyModel> _properties = <PropertyModel>[
   PropertyModel(
     id: 'kololo-001',
+    userId: 'static-user-001',
     title: 'Modern 3-Bedroom Apartment',
     location: 'Kololo, Kampala',
     address: 'Wampewo Avenue, Kololo',
@@ -27,6 +28,7 @@ final List<PropertyModel> _properties = <PropertyModel>[
   ),
   PropertyModel(
     id: 'ntinda-002',
+    userId: 'static-user-001',
     title: 'Family Home with Garden',
     location: 'Ntinda, Kampala',
     address: 'Ntinda Road, Kampala',
@@ -43,6 +45,7 @@ final List<PropertyModel> _properties = <PropertyModel>[
   ),
   PropertyModel(
     id: 'najjera-003',
+    userId: 'static-user-001',
     title: 'Budget 2-Bedroom Rental',
     location: 'Najjera, Kampala',
     address: 'Kira Road, Najjera',

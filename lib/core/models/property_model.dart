@@ -1,12 +1,13 @@
 import 'package:equatable/equatable.dart';
 import 'package:property256/core/database/database_constants.dart';
-import 'package:property256/core/util/sqlite_column_values.dart';
 import 'package:property256/core/models/property_entity.dart';
+import 'package:property256/core/util/sqlite_column_values.dart';
 
 /// Persistent representation of a property row; maps to [PropertiesTable].
 final class PropertyModel extends Equatable {
   const PropertyModel({
     required this.id,
+    required this.userId,
     required this.title,
     required this.location,
     required this.address,
@@ -21,6 +22,7 @@ final class PropertyModel extends Equatable {
   });
 
   final String id;
+  final String userId;
   final String title;
   final String location;
   final String address;
@@ -36,6 +38,7 @@ final class PropertyModel extends Equatable {
   Map<String, Object?> toMap() {
     return <String, Object?>{
       PropertiesTable.id: id,
+      PropertiesTable.userId: userId,
       PropertiesTable.title: title,
       PropertiesTable.location: location,
       PropertiesTable.address: address,
@@ -57,6 +60,7 @@ final class PropertyModel extends Equatable {
     }
     return PropertyModel(
       id: id,
+      userId: stringFromColumn(map[PropertiesTable.userId]),
       title: stringFromColumn(map[PropertiesTable.title]),
       location: stringFromColumn(map[PropertiesTable.location]),
       address: stringFromColumn(map[PropertiesTable.address]),
@@ -71,9 +75,28 @@ final class PropertyModel extends Equatable {
     );
   }
 
+  factory PropertyModel.fromEntity(final PropertyEntity entity) {
+    return PropertyModel(
+      id: entity.id,
+      userId: entity.userId,
+      title: entity.title,
+      location: entity.location,
+      address: entity.address,
+      pricePerMonth: entity.pricePerMonth,
+      bedrooms: entity.bedrooms,
+      bathrooms: entity.bathrooms,
+      squareMeters: entity.squareMeters,
+      imageUrl: entity.imageUrl,
+      description: entity.description,
+      isAvailable: entity.isAvailable,
+      listedAt: entity.listedAt,
+    );
+  }
+
   PropertyEntity toEntity() {
     return PropertyEntity(
       id: id,
+      userId: userId,
       title: title,
       location: location,
       address: address,
@@ -91,6 +114,7 @@ final class PropertyModel extends Equatable {
   @override
   List<Object?> get props => <Object?>[
     id,
+    userId,
     title,
     location,
     address,

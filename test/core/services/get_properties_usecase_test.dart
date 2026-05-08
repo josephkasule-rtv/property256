@@ -21,6 +21,9 @@ void main() {
 
 class FakePropertyRepository implements PropertyRepository {
   @override
+  Future<void> createProperty({required final PropertyEntity property}) async {}
+
+  @override
   Future<PropertyEntity?> getPropertyById({required final String id}) async {
     return null;
   }
@@ -30,6 +33,7 @@ class FakePropertyRepository implements PropertyRepository {
     return <PropertyEntity>[
       PropertyEntity(
         id: 'test-id',
+        userId: 'static-user-001',
         title: 'Test Property',
         location: 'Kampala',
         address: 'Test Address',

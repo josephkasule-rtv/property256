@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:property256/core/routing/app_routes.dart';
 import 'package:property256/core/providers/property_provider.dart';
+import 'package:property256/core/routing/app_routes.dart';
 import 'package:property256/ui/modules/property/screens/property_detail_screen.dart';
 import 'package:property256/ui/modules/property/widgets/property_card.dart';
 import 'package:provider/provider.dart';
@@ -24,10 +24,31 @@ class _PropertyListScreenState extends State<PropertyListScreen> {
     });
   }
 
+  Future<void> _openCreateProperty() async {
+    final Object? result = await Navigator.of(context).pushNamed(
+      AppRoutes.propertyCreate,
+    );
+
+    if (!mounted) {
+      return;
+    }
+
+    if (result == true) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Property created successfully')),
+      );
+    }
+  }
+
   @override
   Widget build(final BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Property256 Kampala')),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: _openCreateProperty,
+        icon: const Icon(Icons.add),
+        label: const Text('Add Property'),
+      ),
       body: Consumer<PropertyProvider>(
         builder:
             (

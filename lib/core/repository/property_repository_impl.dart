@@ -1,24 +1,27 @@
-import 'package:property256/core/repository/in_memory_property_datasource.dart';
+import 'package:property256/core/database/app_database.dart';
+import 'package:property256/core/database/database_constants.dart';
 import 'package:property256/core/models/property_entity.dart';
+import 'package:property256/core/models/property_model.dart';
 import 'package:property256/core/repository/property_repository.dart';
+import 'package:sqflite/sqflite.dart';
 
 class PropertyRepositoryImpl implements PropertyRepository {
-  const PropertyRepositoryImpl({required this.dataSource});
-
-  final InMemoryPropertyDataSource dataSource;
+  const PropertyRepositoryImpl();
 
   @override
   Future<List<PropertyEntity>> getProperties() async {
-    try {
-      final List<PropertyEntity> properties = (await dataSource.getProperties())
-          .map((final property) => property.toEntity())
-          .toList(growable: false);
+    final Database db = await AppDatabase.instance.database;
+    final List<Map<String, Object?>> rows = await db.query(
+      PropertiesTable.tableName,
+      orderBy: '${PropertiesTable.listedAt} DESC',
+    );
 
-      return properties;
-    } catch (error) {
-      // print('Failed to load properties: $error');
-      return <PropertyEntity>[];
-    }
+    return rows
+        .map(
+          (final Map<String, Object?> row) =>
+              PropertyModel.fromMap(row).toEntity(),
+        )
+        .toList(growable: false);
   }
 
   @override
@@ -27,13 +30,30 @@ class PropertyRepositoryImpl implements PropertyRepository {
       return null;
     }
 
-    final List<PropertyEntity> properties = await getProperties();
-    for (final PropertyEntity property in properties) {
-      if (property.id == id) {
-        return property;
-      }
+    final Database db = await AppDatabase.instance.database;
+    final List<Map<String, Object?>> rows = await db.query(
+      PropertiesTable.tableName,
+      where: '${PropertiesTable.id} = ?',
+      whereArgs: <Object>[id],
+      limit: 1,
+    );
+
+    if (rows.isEmpty) {
+      return null;
     }
 
-    return null;
+    return PropertyModel.fromMap(rows.first).toEntity();
+  }
+
+  @override
+  Future<void> createProperty({required final PropertyEntity property}) async {
+    final Database db = await AppDatabase.instance.database;
+    final PropertyModel propertyModel = PropertyModel.fromEntity(property);
+
+    await db.insert(
+      PropertiesTable.tableName,
+      propertyModel.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.abort,
+    );
   }
 }

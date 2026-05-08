@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 class PropertyEntity extends Equatable {
   const PropertyEntity({
     required this.id,
+    required this.userId,
     required this.title,
     required this.location,
     required this.address,
@@ -17,6 +18,7 @@ class PropertyEntity extends Equatable {
   });
 
   final String id;
+  final String userId;
   final String title;
   final String location;
   final String address;
@@ -32,6 +34,7 @@ class PropertyEntity extends Equatable {
   @override
   List<Object> get props => <Object>[
     id,
+    userId,
     title,
     location,
     address,
