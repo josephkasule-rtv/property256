@@ -1,6 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:property256/core/database/app_database.dart';
 import 'package:property256/core/models/property_entity.dart';
+import 'package:property256/core/models/unit_entity.dart';
 import 'package:property256/core/repository/property_repository_impl.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -62,6 +63,35 @@ void main() {
       expect(loaded!.title, 'Repo Test Property');
       expect(loaded.isAvailable, isTrue);
       expect(loaded.userId, 'static-user-001');
+    });
+
+    test('returns units for a property', () async {
+      final List<UnitEntity> units = await repository.getUnitsByPropertyId(
+        propertyId: 'kololo-001',
+      );
+
+      expect(units, isNotEmpty);
+      expect(units.first.propertyId, 'kololo-001');
+    });
+
+    test('creates a unit and retrieves it by property id', () async {
+      final String unitId = 'unit-test-${DateTime.now().microsecondsSinceEpoch}';
+      final UnitEntity unit = UnitEntity(
+        id: unitId,
+        propertyId: 'kololo-001',
+        name: 'A2',
+        rentAmount: 2200000,
+        isOccupied: false,
+        createdAt: DateTime.now(),
+      );
+
+      await repository.createUnit(unit: unit);
+
+      final List<UnitEntity> units = await repository.getUnitsByPropertyId(
+        propertyId: 'kololo-001',
+      );
+
+      expect(units.any((final UnitEntity row) => row.id == unitId), isTrue);
     });
   });
 }

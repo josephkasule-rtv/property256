@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:property256/core/models/property_entity.dart';
+import 'package:property256/core/models/unit_entity.dart';
 import 'package:property256/core/repository/property_repository.dart';
 import 'package:property256/core/services/create_property_usecase.dart';
 
@@ -42,6 +43,9 @@ class RecordingPropertyRepository implements PropertyRepository {
   }
 
   @override
+  Future<void> createUnit({required final UnitEntity unit}) async {}
+
+  @override
   Future<PropertyEntity?> getPropertyById({required final String id}) async {
     return null;
   }
@@ -49,5 +53,12 @@ class RecordingPropertyRepository implements PropertyRepository {
   @override
   Future<List<PropertyEntity>> getProperties() async {
     return <PropertyEntity>[];
+  }
+
+  @override
+  Future<List<UnitEntity>> getUnitsByPropertyId({
+    required final String propertyId,
+  }) async {
+    return <UnitEntity>[];
   }
 }

@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:property256/core/database/database_constants.dart';
+import 'package:property256/core/models/unit_entity.dart';
 import 'package:property256/core/util/sqlite_column_values.dart';
 
 /// Row model for [UnitsTable] (`units`).
@@ -37,6 +38,19 @@ final class UnitModel extends Equatable {
     };
   }
 
+  factory UnitModel.fromEntity(final UnitEntity entity) {
+    return UnitModel(
+      id: entity.id,
+      propertyId: entity.propertyId,
+      name: entity.name,
+      bedrooms: entity.bedrooms,
+      bathrooms: entity.bathrooms,
+      rentAmount: entity.rentAmount,
+      isOccupied: entity.isOccupied,
+      createdAt: entity.createdAt,
+    );
+  }
+
   factory UnitModel.fromMap(final Map<String, Object?> map) {
     final String id = stringFromColumn(map[UnitsTable.id]);
     if (id.isEmpty) {
@@ -55,6 +69,19 @@ final class UnitModel extends Equatable {
       rentAmount: intFromColumn(map[UnitsTable.rentAmount]),
       isOccupied: sqliteBoolFromColumn(map[UnitsTable.isOccupied]),
       createdAt: sqliteDateTimeFromColumn(map[UnitsTable.createdAt]),
+    );
+  }
+
+  UnitEntity toEntity() {
+    return UnitEntity(
+      id: id,
+      propertyId: propertyId,
+      name: name,
+      rentAmount: rentAmount,
+      isOccupied: isOccupied,
+      createdAt: createdAt,
+      bedrooms: bedrooms,
+      bathrooms: bathrooms,
     );
   }
 

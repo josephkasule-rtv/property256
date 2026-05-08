@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:property256/core/models/property_entity.dart';
+import 'package:property256/core/models/unit_entity.dart';
 import 'package:property256/core/repository/property_repository.dart';
 import 'package:property256/main.dart';
 
@@ -81,6 +82,9 @@ class InMemoryPropertyRepository implements PropertyRepository {
   }
 
   @override
+  Future<void> createUnit({required final UnitEntity unit}) async {}
+
+  @override
   Future<PropertyEntity?> getPropertyById({required final String id}) async {
     for (final PropertyEntity property in _properties) {
       if (property.id == id) {
@@ -94,5 +98,12 @@ class InMemoryPropertyRepository implements PropertyRepository {
   @override
   Future<List<PropertyEntity>> getProperties() async {
     return List<PropertyEntity>.unmodifiable(_properties);
+  }
+
+  @override
+  Future<List<UnitEntity>> getUnitsByPropertyId({
+    required final String propertyId,
+  }) async {
+    return <UnitEntity>[];
   }
 }

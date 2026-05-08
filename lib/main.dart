@@ -6,7 +6,9 @@ import 'package:property256/core/repository/property_repository_impl.dart';
 import 'package:property256/core/routing/app_router.dart';
 import 'package:property256/core/routing/app_routes.dart';
 import 'package:property256/core/services/create_property_usecase.dart';
+import 'package:property256/core/services/create_unit_usecase.dart';
 import 'package:property256/core/services/get_properties_usecase.dart';
+import 'package:property256/core/services/get_units_by_property_usecase.dart';
 import 'package:property256/core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +33,10 @@ class Property256App extends StatelessWidget {
       create: (final BuildContext context) => PropertyProvider(
         getPropertiesUseCase: GetPropertiesUseCase(repository: repository),
         createPropertyUseCase: CreatePropertyUseCase(repository: repository),
+        getUnitsByPropertyUseCase: GetUnitsByPropertyUseCase(
+          repository: repository,
+        ),
+        createUnitUseCase: CreateUnitUseCase(repository: repository),
       ),
       child: MaterialApp(
         title: 'Property256',
