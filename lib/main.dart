@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:property256/core/database/app_database.dart';
+import 'package:property256/core/providers/property_provider.dart';
+import 'package:property256/core/repository/property_repository.dart';
+import 'package:property256/core/repository/property_repository_impl.dart';
 import 'package:property256/core/routing/app_router.dart';
 import 'package:property256/core/routing/app_routes.dart';
-import 'package:property256/core/theme/app_theme.dart';
-import 'package:property256/core/repository/in_memory_property_datasource.dart';
-import 'package:property256/core/repository/property_repository_impl.dart';
+import 'package:property256/core/services/create_property_usecase.dart';
 import 'package:property256/core/services/get_properties_usecase.dart';
-import 'package:property256/core/providers/property_provider.dart';
+import 'package:property256/core/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {
@@ -16,18 +17,20 @@ Future<void> main() async {
 }
 
 class Property256App extends StatelessWidget {
-  const Property256App({super.key});
+  const Property256App({super.key, final PropertyRepository? repository})
+    : _repository = repository;
+
+  final PropertyRepository? _repository;
 
   @override
   Widget build(final BuildContext context) {
-    final InMemoryPropertyDataSource dataSource = InMemoryPropertyDataSource();
-    final PropertyRepositoryImpl repository = PropertyRepositoryImpl(
-      dataSource: dataSource,
-    );
+    final PropertyRepository repository =
+        _repository ?? const PropertyRepositoryImpl();
 
     return ChangeNotifierProvider<PropertyProvider>(
       create: (final BuildContext context) => PropertyProvider(
         getPropertiesUseCase: GetPropertiesUseCase(repository: repository),
+        createPropertyUseCase: CreatePropertyUseCase(repository: repository),
       ),
       child: MaterialApp(
         title: 'Property256',
